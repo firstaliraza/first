@@ -1,5 +1,3 @@
-<?php
-
 function readURL($target_url,$proxy="") 
 {
 	//var_dump($target_url);exit;
@@ -80,8 +78,3 @@ function UrlFilter($file_data,$market_url){
 
 	}
 };
-
-
-
-
-?>
