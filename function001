@@ -1,0 +1,80 @@
+function readURL($target_url,$proxy="") 
+{
+	//var_dump($target_url);exit;
+  $userAgent = 'Googlebot/2.1 (http://www.googlebot.com/bot.html)';
+
+  // make the cURL request to $target_url
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+  curl_setopt($ch, CURLOPT_URL,$target_url);
+  curl_setopt($ch, CURLOPT_FAILONERROR, true);
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+  curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+   if($proxy != "")
+ {
+    curl_setopt($ch, CURLOPT_PROXY, $proxy);
+    curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 0);
+    }
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+   $result['EXE'] = curl_exec($ch);
+    $result['INF'] = curl_getinfo($ch);
+    $result['ERR'] = curl_error($ch);
+ 
+  return $result;
+}
+///////////////////////////////////////////////////////////////////////////////
+function CheckData($file_data,$abcd,$file_url){
+
+	foreach($abcd as $bcde){
+		
+		if(strpos($file_data,$bcde)){
+			
+			$CheckDataResult = $file_url."\r\n";
+			
+			return $CheckDataResult;
+			
+		}
+		
+	};
+	
+	
+}
+//////////////////////////////////////////////////////////////////////////////////
+function get_domain($url)
+{
+  $pieces = parse_url($url);
+  
+  $pieces = $pieces['scheme']."://".$pieces['host'];
+
+return $pieces;
+}
+/////////////////////////////////////////////////////////////////////////////////
+function UrlFilter($file_data,$market_url){
+	$mylinks = array();
+	$dom = new DOMDocument;
+
+//Parse the HTML. The @ is used to suppress any parsing errors
+//that will be thrown if the $html string isn't valid XHTML.
+	@$dom->loadHTML($file_data);
+	
+	$XPath = new DOMXPath($dom);
+//Get all links. You could also use any other tag name here,
+//like 'img' or 'table', to extract other tags.
+// $links = $dom->getElementsByTagName('a');
+
+	$linksArr = $XPath->query('//a[@class="hdrlnk"]');
+	
+	if ( $linksArr->length > 0 ) {
+	
+		foreach ($linksArr as $link){
+//Extract and show the "href" attribute. //echo $link->nodeValue;
+
+		$mylinks[] = $market_url.$link->getAttribute('href');
+				//print_r($mylinks);
+		}
+		
+		return $mylinks;
+
+	}
+};
